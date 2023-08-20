@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SuperHeroApp.Data;
 using SuperHeroApp.Models;
 
@@ -41,16 +42,14 @@ namespace SuperHeroApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SuperHero superHero)
         {
-            try
+
+            if (ModelState.IsValid)
             {
-                //Linq Add superhero to the list
                 _context.SuperHeroes.Add(superHero);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View(superHero);
-            }
+            return View(superHero);
         }
 
         // GET: SuperHeroesController/Edit/5
@@ -66,15 +65,15 @@ namespace SuperHeroApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, SuperHero superHero)
         {
-            try
+
+            if (ModelState.IsValid)
             {
-                _context.SuperHeroes.Update(superHero);
+                
+                _context.Update(superHero);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View(superHero);
-            }
+            return View(superHero);
         }
 
         // GET: SuperHeroesController/Delete/5
@@ -88,14 +87,17 @@ namespace SuperHeroApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, SuperHero superHero)
         {
-            try
-            {   _context.SuperHeroes.Remove(superHero);
+            
+            _context.SuperHeroes.Find(id);
+            if (ModelState.IsValid)
+            {
+                _context.SuperHeroes.Remove(superHero);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View(superHero);
-            }
+               
+            return View(superHero);
         }
+    
     }
 }
