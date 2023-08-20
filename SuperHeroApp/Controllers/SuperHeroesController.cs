@@ -55,9 +55,9 @@ namespace SuperHeroApp.Controllers
         // GET: SuperHeroesController/Edit/5
         public ActionResult Edit(int id)
         {
-            
+           var superhero=  _context.SuperHeroes.Find(id);
 
-            return View();
+            return View(superhero);
         }
 
         // POST: SuperHeroesController/Edit/5
@@ -68,8 +68,7 @@ namespace SuperHeroApp.Controllers
 
             if (ModelState.IsValid)
             {
-                
-                _context.Update(superHero);
+                _context.Entry(superHero).State=EntityState.Modified;
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -77,26 +76,28 @@ namespace SuperHeroApp.Controllers
         }
 
         // GET: SuperHeroesController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int ? id)
         {
-            return View();
+            var superhero = _context.SuperHeroes.Find(id);
+            return View(superhero);
         }
 
         // POST: SuperHeroesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, SuperHero superHero)
+        public ActionResult Delete(int id)
         {
             
-            _context.SuperHeroes.Find(id);
+            
             if (ModelState.IsValid)
             {
+                SuperHero superHero = _context.SuperHeroes.Find(id);
                 _context.SuperHeroes.Remove(superHero);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
                
-            return View(superHero);
+            return View();
         }
     
     }
